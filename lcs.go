@@ -29,15 +29,11 @@ func LCS(a, b []rune) (int, []rune) {
 		} else if lengths[x][y] == lengths[x][y-1] {
 			y--
 		} else {
-			s = append(s, a[x-1])
+			s = append([]rune{a[x-1]}, s...)
 			x--
 			y--
 		}
 	}
 
-	// reverse string
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
-	}
 	return len(s), s
 }
