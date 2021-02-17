@@ -328,3 +328,124 @@ func BenchmarkLCS5(b *testing.B) {
 	b.ResetTimer()
 	_, result5 = LCS3(s1, s1)
 }
+
+func checkDifference(a, b []rune) bool {
+	areDifferent := false
+	for i := range a {
+		if a[i] != b[i] {
+			areDifferent = true
+		}
+	}
+	return areDifferent || len(a) != len(b)
+}
+
+func TestLCS(t *testing.T) {
+	// First letters match
+	gotLength, gotSubstring := LCS([]rune{'a', 'b', 'c'}, []rune{'a', 'b'})
+	wantLength, wantSubstring := 2, []rune{'a', 'b'}
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent := checkDifference(gotSubstring, wantSubstring)
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+
+	// Last letters match
+	gotLength, gotSubstring = LCS([]rune{'a', 'b', 'c'}, []rune{'b', 'c'})
+	wantLength, wantSubstring = 2, []rune{'b', 'c'}
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent = checkDifference(gotSubstring, wantSubstring)
+
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+
+	// Middle letters match
+	gotLength, gotSubstring = LCS([]rune{'a', 'b', 'c'}, []rune{'b'})
+	wantLength, wantSubstring = 1, []rune{'b'}
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent = checkDifference(gotSubstring, wantSubstring)
+
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+
+	// Skips gap
+	gotLength, gotSubstring = LCS([]rune{'a', 'b', 'c'}, []rune{'a', 'c'})
+	wantLength, wantSubstring = 2, []rune{'a', 'c'}
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent = checkDifference(gotSubstring, wantSubstring)
+
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+
+	// No match
+	gotLength, gotSubstring = LCS([]rune{'a', 'b', 'c'}, []rune{'d', 'e'})
+	wantLength, wantSubstring = 0, []rune{}
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent = checkDifference(gotSubstring, wantSubstring)
+
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+
+	// Handles empty array
+	gotLength, gotSubstring = LCS([]rune{'a', 'b', 'c'}, []rune{})
+	wantLength, wantSubstring = 0, []rune{}
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent = checkDifference(gotSubstring, wantSubstring)
+
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+
+	// Handles long array
+	var long = make([]rune, 1000000)
+	for i := 0; i < len(long); i++ {
+		long[i] = 'A'
+	}
+
+	gotLength, gotSubstring = LCS(long, []rune{'A'})
+	wantLength, wantSubstring = 1, []rune{'A'}
+
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent = checkDifference(gotSubstring, wantSubstring)
+
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+
+	// Handles letters upper and lower case letters of the alphabet
+	gotLength, gotSubstring = LCS([]rune{'A', 'b', 'c'}, []rune{'A'})
+	wantLength, wantSubstring = 1, []rune{'A'}
+	if gotLength != wantLength {
+		t.Errorf("Got length %q, but want length %q.", gotLength, wantLength)
+	}
+
+	areDifferent = checkDifference(gotSubstring, wantSubstring)
+
+	if areDifferent {
+		t.Errorf("Got substring %q, but want substring %q", gotSubstring, wantSubstring)
+	}
+}
